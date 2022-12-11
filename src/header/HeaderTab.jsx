@@ -1,34 +1,45 @@
 import React, { useEffect } from "react";
 
 import axios from "axios";
-import ReactDOM from "react-dom/client";
-import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
 
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import FormHelperText from "@mui/material/FormHelperText";
 import InputAdornment from "@mui/material/InputAdornment";
+import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import rtlPlugin from 'stylis-plugin-rtl';
+
+
+import Switch from "@mui/material/Switch";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+
+
+import Typography from '@mui/material/Typography';
+
 
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import FormHelperText from '@mui/material/FormHelperText';
 
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
+import Input from '@mui/material/Input';
+
 
 
 import "moment/locale/ar-sa";
 
 import dayjs from "dayjs";
 
-import "./../index.css";
+//import "./../index.css";
 
 // import AdapterHijri from "@date-io/hijri";
 // import AdapterJalaali from "@date-io/jalaali";
@@ -38,6 +49,7 @@ import Stack from "@mui/material/Stack";
 import MuhannadTable from "../body/MuhannadTable";
 import { withTheme } from "styled-components";
 import { withEmotionCache } from "@emotion/react";
+import { FormLabel } from "@mui/material";
 
 const styles = (theme) => ({
   formControl: {
@@ -50,9 +62,21 @@ const styles = (theme) => ({
   },
 });
 
+const labelSize = {
+  width: 170, height: 40
+}
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
 const data = {
   localDate: "2022-02-10",
-  wayForMemorized: false,
+  wayForMemorized: true,
   numberOfPageDrs: "0",
   numberOfLineDrs: "9",
   numberOfRememorizedDrs: 3,
@@ -67,6 +91,7 @@ const data = {
   percentage: "0.3",
   firstName: "Muhannad-vs",
   lastName: "Alduayji-vs",
+  printType: "pdf"
 };
 const getTechPlan = "http://localhost:8080/getTechPlan";
 
@@ -78,7 +103,7 @@ const HeaderTab = (classes) => {
   const [dataProcessed, setDataProcessed] = React.useState();
 
   const [valueDate, setValueDate] = React.useState(
-    dayjs(dataRequest.localDate)
+    "2022-02-10"
   );
 
   const [age, setAge] = React.useState(1);
@@ -133,6 +158,7 @@ const HeaderTab = (classes) => {
       console.log("<<< - Response Data - >>> ::: \n", dataResponse);
     };
 
+    console.log(dataRequest, "...")
     fetchUsers();
 
     e.preventDefault();
@@ -150,12 +176,14 @@ const HeaderTab = (classes) => {
     if (dataResponse["gregorianDateList"] !== undefined) {
       let count = 0;
 
-      for (var i = 0; i < dataResponse["biggestMemorized"].length; i++) {
-        if (dataResponse["biggestMemorized"][i] == null) count++;
-      }
+      if (dataResponse["biggestMemorized"] != null) {
+        for (var i = 0; i < dataResponse["biggestMemorized"].length; i++) {
+          if (dataResponse["biggestMemorized"][i] == null) count++;
+        }
 
-      if (count === dataResponse["biggestMemorized"].length)
-        dataResponse["biggestMemorized"] = null;
+        if (count === dataResponse["biggestMemorized"].length)
+          dataResponse["biggestMemorized"] = null;
+      }
 
       // Iterate over the property names:
       for (var i = 0; i < dataResponse["gregorianDateList"].length; i++) {
@@ -202,374 +230,535 @@ const HeaderTab = (classes) => {
   }, [dataResponse]);
 
   return (
-    <div>
-      <p>This is Header app </p>
-      <div className="settings">
-        <form onSubmit={handleClick}>
-          <div className="titleSettings">الاعدادات</div>
+    <Container sx={{ flexWrap: 'wrap' }} >
+      <br />
+      <Container sx={{ background: "white" }}>
 
-          <div className="parts">
-            <div className="settingsPart">
+        <Box container sx={{ pb: 2 }}>
+          <Box sx={{ pb: 1, background: "#3770a2", color: "white" }}>الاعدادات</Box>
 
-            <FormControl>
-            <FormLabel id="demo-radio-buttons-group-label" sx={{color:"black"}}> طريقة الحفظ </FormLabel>
-              <RadioGroup
-                aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="female"
-                name="radio-buttons-group"
-              >
-                <FormControlLabel value={true}  control={<Radio />} label="من الفاتحة الى الناس" />
-                <FormControlLabel value={false} control={<Radio />} label="من الناس الى الفاتحة" />
-              </RadioGroup>
-            </FormControl>
-              <InputLabel id="labelMemorized"> طريقة الحفظ </InputLabel>
-              <Select
-                labelId="labelMemorized"
-                sx={{ width: 170, height: 35 }}
-                id="select"
-                value={dataRequest.wayForMemorized}
-                onChange={(e) => {
-                  console.log(e);
-                  setDataRequest({
-                    ...dataRequest,
-                    wayForMemorized: e.target.value,
-                  });
-                }}
-              >
-                <MenuItem key={1} value={true}>
-                  من الفاتحة الى الناس
-                </MenuItem>
-                <MenuItem key={2} value={false}>
-                  من الناس الى الفاتحة
-                </MenuItem>
-              </Select>
-              <InputLabel id="labelMemorized">الحفظ سورة</InputLabel>
-              <Select
-                labelId="labelMemorized"
-                sx={{ width: 100, height: 35 }}
-                id="select"
-                value={dataRequest.numberOfSorah}
-                onChange={(e) =>
-                  setDataRequest({
-                    ...dataRequest,
-                    numberOfSorah: e.target.value,
-                  })
-                }
-              >
-                {sorahNames.map((e, idx) => (
-                  <MenuItem key={idx + 1} value={1 + idx}>
-                    {e}
-                  </MenuItem>
-                ))}
-              </Select>
-              <InputLabel id="labelAyah">الاية</InputLabel>
-              <Select
-                labelId="labelAyah"
-                sx={{ width: 100, height: 35 }}
-                id="select"
-                value={dataRequest.numberOfAyah}
-                onChange={(e) => {
-                  console.log("Ayah number :: ", e.target.value);
-                  setDataRequest({
-                    ...dataRequest,
-                    numberOfAyah: e.target.value,
-                  });
-                }}
-              >
-                {listOfAyah}
-              </Select>
+          <Grid item xs="auto"  >
 
-              <InputLabel id="labelMemorized">عدد سطور الحفظ</InputLabel>
-              <FormControl sx={{ m: 1, width: "15ch" }} variant="outlined">
-                <OutlinedInput
-                  id="outlined-adornment-weightt"
-                  type="number"
-                  value={dataRequest.numberOfPageDrs}
-                  onChange={(e) => {
-                    console.log("value : ", e.target.value);
-                    setDataRequest({
-                      ...dataRequest,
-                      numberOfPageDrs: e.target.value,
-                    });
-                  }}
-                  endAdornment={
-                    <InputAdornment position="start">الاوجه</InputAdornment>
-                  }
-                  aria-describedby="outlined-weight-helper-text"
-                  inputProps={{
-                    "aria-label": "weight",
-                  }}
-                />
-                {/* <FormHelperText id="outlined-weight-helper-textt">
-                  الاوجه
-                </FormHelperText> */}
-              </FormControl>
+            <Box
+              onSubmit={handleClick}
+              component="form"
+              sx={{
+                background: "#ebebeb",
+                '& .MuiTextField-root': { m: 1, width: '25ch' },
+              }}
+              noValidate
+              autoComplete="off"
+            >
 
-              <FormControl sx={{ m: 1, width: "15ch" }} variant="outlined">
-                <OutlinedInput
-                  id="outlined-adornment-weight"
-                  type="number"
-                  value={dataRequest.numberOfLineDrs}
-                  onChange={(e) => {
-                    console.log("value : ", e.target.value);
-                    setDataRequest({
-                      ...dataRequest,
-                      numberOfLineDrs: e.target.value,
-                    });
-                  }}
-                  endAdornment={
-                    <InputAdornment position="end">السطور</InputAdornment>
-                  }
-                  aria-describedby="outlined-weight-helper-text"
-                  inputProps={{
-                    "aria-label": "weight",
-                  }}
-                />
-                {/* <FormHelperText id="outlined-weight-helper-text">
+              <Grid container flex={2} rowcSpacing={1} direction="row-reverse"  >
+
+
+                <Grid item sx={{ mt: 1, borderLeft: "1px solid white" }} xs={12} md={3} key={1114}>
+                  <FormLabel>الاعدادات</FormLabel>
+                  <br />
+                  <Grid xs dir="rtl" direction="column">
+                    <FormControl>
+                      <FormLabel sx={{ mt: 1, mb: -1, color: "black" }}>التاريخ</FormLabel>
+                      <LocalizationProvider
+                        id="clock"
+                        dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          openTo="day"
+                          inputFormat={"DD/MM/YYYY"}
+                          views={["month", "year", "day"]}
+                          value={valueDate}
+
+                          onChange={(e) => {
+                            setDataRequest({
+                              ...dataRequest,
+                              localDate: (e.$d.getFullYear() + "-" + ((e.$d.getMonth() + "").length == 2 ? e.$d.getMonth() : ("0" + (e.$d.getMonth() + 1))) + "-" + ((e.$d.getDate() + "").length == 2 ? e.$d.getDate() : ("0" + e.$d.getDate()))),
+                            });
+                            setValueDate(e);
+                          }}
+                          renderInput={(params) => < TextField sx={{ borderRadius: 1, background: "white" }} size="small"  {...params} />}
+                        />
+                      </LocalizationProvider>
+                    </FormControl>
+                  </Grid>
+                  <Grid sx={{ mt: 0 }}>
+                    <FormControl dir="rtl" variant="outlined">
+                      <FormLabel sx={{ color: "black" }} id="labelMemorized">
+                        عدد ايام الخطة في الاسبوع
+                      </FormLabel>
+
+                      <OutlinedInput
+
+                        id="outlined-adornment-weightt"
+                        type="number"
+                        sx={{ width: 215, height: 40, background: "white" }}
+                        value={dataRequest.numberOfDayPeerWeek}
+                        onChange={(e) =>
+                          setDataRequest({
+                            ...dataRequest,
+                            numberOfDayPeerWeek: e.target.value,
+                          })
+                        }
+                        endAdornment={
+                          <InputAdornment sx={{ ml: 1.5 }}>{
+                            dataRequest.numberOfDayPeerWeek == 1 ? "يوم" : dataRequest.numberOfDayPeerWeek == 2 ? "يومان" : "أيام"
+                          }</InputAdornment>
+                        }
+
+                      />
+
+                    </FormControl>
+                  </Grid>
+                  <Grid sx={{ mt: 1 }}>
+                    <FormControl dir="rtl" variant="outlined">
+                      <FormLabel sx={{ color: "black" }} id="labelMemorized" >  عدد الايام للخطة الكلي </FormLabel>
+
+                      <OutlinedInput
+                        id="outlined-adornment-weightt"
+                        type="number"
+                        value={dataRequest.numberOfDayForPlan}
+                        sx={{ width: 215, height: 40, background: "white" }}
+                        onChange={(e) =>
+                          setDataRequest({
+                            ...dataRequest,
+                            numberOfDayForPlan: e.target.value,
+                          })
+                        }
+                        endAdornment={
+                          <InputAdornment sx={{ ml: 1.5 }}>{
+                            dataRequest.numberOfDayForPlan == 1 ? "يوم" : dataRequest.numberOfDayForPlan == 2 ? "يومان" : "أيام"
+                          }</InputAdornment>
+                        }
+
+                      />
+
+                    </FormControl>
+                  </Grid>
+                  <Grid xs={12}>
+                    <FormControl sx={{ mt: 1 }} dir="rtl">
+
+                      <FormLabel sx={{ textAlign: "center", color: "black" }} id="labelMemorized"> طريقة الحفظ </FormLabel>
+                      <Select
+
+                        labelId="labelMemorized"
+                        sx={{ width: 215, height: 40, background: "white" }}
+                        id="select"
+                        value={dataRequest.wayForMemorized}
+                        onChange={(e) => {
+                          console.log(e);
+                          setDataRequest({
+                            ...dataRequest,
+                            wayForMemorized: e.target.value,
+                          });
+                        }}
+                      >
+                        <MenuItem key={1} value={true} >
+                          من الفاتحة الى الناس
+                        </MenuItem>
+                        <MenuItem key={2} value={false} >
+                          من الناس الى الفاتحة
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
+                </Grid>
+
+
+
+                <Grid item sx={{ mt: 1, borderLeft: "1px solid white" }} xs={12} md={3} key={1113} container
+                  direction="row"
+                >
+
+                  <Grid xs={12} >
+                    <FormControl item >
+                      <FormGroup aria-label="position">
+                        <FormLabel sx={{ textAlign: "center" }}>الـحــفــظ</FormLabel>
+
+                        <Grid container gap={2} direction="row-reverse" sx={{ mt: 1 }}>
+
+                          <Grid item >
+                            <FormControl item >
+                              <FormLabel sx={{ textAlign: "center", color: "black" }}> السورة</FormLabel>
+                              <Select
+                                xs={10}
+                                labelId="labelMemorized"
+                                sx={{ width: 123, height: 40, background: "white" }}
+                                id="select"
+                                value={dataRequest.numberOfSorah}
+                                onChange={(e) =>
+                                  setDataRequest({
+                                    ...dataRequest,
+                                    numberOfSorah: e.target.value,
+                                  })
+                                }
+                              >
+                                {sorahNames.map((e, idx) => (
+                                  <MenuItem key={idx + 1} value={1 + idx}>
+                                    {e}
+                                  </MenuItem>
+                                ))}
+
+                              </Select>
+                            </FormControl>
+                          </Grid>
+                          <Grid item   >
+                            <FormControl item >
+                              <FormLabel sx={{ textAlign: "center", color: "black" }}> آية</FormLabel>
+
+                              <Select
+                                xs={2}
+                                labelId="labelAyah"
+                                sx={{ width: 75, height: 40, background: "white" }}
+                                id="select"
+                                value={dataRequest.numberOfAyah}
+                                onChange={(e) => {
+                                  console.log("Ayah number :: ", e.target.value);
+                                  setDataRequest({
+                                    ...dataRequest,
+                                    numberOfAyah: e.target.value,
+                                  });
+                                }}
+
+
+                              >
+                                {listOfAyah}
+                              </Select>
+                            </FormControl>
+                          </Grid>
+                        </Grid>
+                      </FormGroup>
+                    </FormControl>
+                  </Grid>
+                  <Grid xs={12} sx={{ mt: -0.3 }}>
+
+                    <FormControl dir="rtl" item >
+                      <FormLabel sx={{ color: "black" }} id="labelMemorized">عدد أوجه الحفظ</FormLabel>
+
+                      <OutlinedInput
+                        id="outlined-adornment-weightt"
+                        type="number"
+                        value={dataRequest.numberOfPageDrs}
+                        sx={{ width: 215, height: 40, background: "white" }}
+                        onChange={(e) => {
+                          console.log("value : ", e.target.value);
+                          setDataRequest({
+                            ...dataRequest,
+                            numberOfPageDrs: e.target.value,
+                          });
+                        }}
+                        endAdornment={
+                          <InputAdornment sx={{ ml: 1.5 }}>{
+                            dataRequest.numberOfPageDrs == 1 ? "وجه" : dataRequest.numberOfPageDrs == 2 ? "وجهان" : "أوجه"
+                          }</InputAdornment>
+                        }
+
+                      />
+                    </FormControl>
+                  </Grid>
+
+                  <Grid xs={12}
+                    sx={{ mt: 0 }}>
+
+                    <FormControl item dir="rtl" >
+                      <FormLabel sx={{ color: "black" }} id="labelMemorized">عدد سطور الحفظ</FormLabel>
+
+                      <OutlinedInput
+                        id="outlined-adornment-weight"
+                        type="number"
+                        value={dataRequest.numberOfLineDrs}
+                        sx={{ width: 215, height: 40, background: "white" }}
+                        onChange={(e) => {
+                          console.log("value : ", e.target.value);
+                          setDataRequest({
+                            ...dataRequest,
+                            numberOfLineDrs: e.target.value,
+                          });
+                        }}
+                        endAdornment={
+                          <InputAdornment sx={{ ml: 1.5 }}>{
+                            dataRequest.numberOfLineDrs == 1 ? "سطر" : dataRequest.numberOfLineDrs == 2 ? "سطران" : "سطور"
+                          }
+                          </InputAdornment>
+                        }
+                        aria-describedby="outlined-weight-helper-text"
+                        inputProps={{
+                          "aria-label": "weight",
+                        }}
+                      />
+                      {/* <FormHelperText id="outlined-weight-helper-text">
                   السطور
                 </FormHelperText> */}
-              </FormControl>
-            </div>
-            <div className="settingsPart">
-              <InputLabel id="labelMemorized">مراجعة الحفظ لأخر</InputLabel>
-              <FormControl sx={{ m: 1, width: "15ch" }} variant="outlined">
-                <OutlinedInput
-                  id="outlined-adornment-weightt"
-                  type="number"
-                  value={dataRequest.numberOfRememorizedDrs}
-                  onChange={(e) =>
-                    setDataRequest({
-                      ...dataRequest,
-                      numberOfRememorizedDrs: e.target.value,
-                    })
-                  }
-                  endAdornment={
-                    <InputAdornment position="start">الايام</InputAdornment>
-                  }
-                  aria-describedby="outlined-weight-helper-text"
-                  inputProps={{
-                    "aria-label": "weight",
-                  }}
-                />
-                {/* <FormHelperText id="outlined-weight-helper-textt">
+                    </FormControl>
+                  </Grid>
+
+                  <Grid xs={12}>
+                    <br />
+                    <br />
+
+                  </Grid>
+
+                  {/* AdapterHijri */}
+
+                </Grid>
+
+                <Grid item sx={{ mt: 1, borderLeft: "1px solid white" }} xs={12} md={3} key={1112} direction="row">
+
+                  <Grid xs={12} >
+                    <FormControl item >
+                      <FormGroup aria-label="position">
+                        <FormLabel sx={{ textAlign: "center" }}>المراجعة الصغرى</FormLabel>
+                      </FormGroup>
+                    </FormControl>
+                  </Grid>
+
+
+
+                  <Grid sx={{ mt: 1 }} >
+                    <FormControl dir="rtl" variant="outlined">
+
+                      <FormLabel sx={{ color: "black" }} id="labelMemorized">مراجعة الحفظ لأخر</FormLabel>
+
+                      <OutlinedInput
+                        id="outlined-adornment-weightt"
+                        type="number"
+                        sx={{ width: 215, height: 40, background: "white" }}
+                        value={dataRequest.numberOfRememorizedDrs}
+                        onChange={(e) =>
+                          setDataRequest({
+                            ...dataRequest,
+                            numberOfRememorizedDrs: e.target.value,
+                          })
+                        }
+                        endAdornment={
+                          <InputAdornment sx={{ ml: 1.5 }} >{
+                            dataRequest.numberOfRememorizedDrs == 1 ? "يوم" : dataRequest.numberOfRememorizedDrs == 2 ? "يومان" : "أيام"
+                          }</InputAdornment>
+                        }
+
+                      />
+
+                    </FormControl>
+                  </Grid>
+                  <Grid xs={12} sx={{ mt: 1 }}>
+                    <FormControl dir="rtl" variant="outlined">
+                      <FormLabel sx={{ color: "black" }} id="labelMemorized">الايام للمراجعة فقط</FormLabel>
+
+                      <OutlinedInput
+                        id="outlined-adornment-weightt"
+                        type="number"
+                        value={dataRequest.numberOfDaysSmallMemorized}
+                        sx={{ width: 215, height: 40, background: "white" }}
+                        onChange={(e) =>
+                          setDataRequest({
+                            ...dataRequest,
+                            numberOfDaysSmallMemorized: e.target.value,
+                          })
+                        }
+                        endAdornment={
+                          <InputAdornment sx={{ ml: 1.5 }} >{
+                            dataRequest.numberOfDaysSmallMemorized == 1 ? "يوم" : dataRequest.numberOfDaysSmallMemorized == 2 ? "يومان" : "أيام"
+                          }</InputAdornment>
+
+                        }
+                      // aria-describedby="outlined-weight-helper-text"
+                      // inputProps={{
+                      //   "aria-label": "weight",
+                      // }}
+                      />
+                      {/* <FormHelperText id="outlined-weight-helper-textt">
                   الايام
                 </FormHelperText> */}
-              </FormControl>
-              <InputLabel id="labelMemorized">الايام للمراجعة فقط</InputLabel>
-              <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                <OutlinedInput
-                  id="outlined-adornment-weightt"
-                  type="number"
-                  value={dataRequest.numberOfDaysSmallMemorized}
-                  onChange={(e) =>
-                    setDataRequest({
-                      ...dataRequest,
-                      numberOfDaysSmallMemorized: e.target.value,
-                    })
-                  }
-                  endAdornment={
-                    <InputAdornment position="start">الايام</InputAdornment>
-                  }
-                  aria-describedby="outlined-weight-helper-text"
-                  inputProps={{
-                    "aria-label": "weight",
-                  }}
-                />
-                {/* <FormHelperText id="outlined-weight-helper-textt">
-                  الايام
-                </FormHelperText> */}
-              </FormControl>
-              <InputLabel id="labelMemorized">
-                عدد الاوجه للمراجعة الكبرى
-              </InputLabel>
-              <FormControl
-                sx={{ m: 1, width: "15ch", textAlign: "right" }}
-                variant="outlined"
-              >
-                <OutlinedInput
-                  id="outlined-adornment-weightt"
-                  type="number"
-                  value={dataRequest.numberOfPageBiggestMemorized}
-                  onChange={(e) =>
-                    setDataRequest({
-                      ...dataRequest,
-                      numberOfPageBiggestMemorized: e.target.value,
-                    })
-                  }
-                  endAdornment={
-                    <InputAdornment position="start">الاوجه</InputAdornment>
-                  }
-                  aria-describedby="outlined-weight-helper-text"
-                  inputProps={{
-                    "aria-label": "weight",
-                  }}
-                />
-                {/* <FormHelperText id="outlined-weight-helper-textt">
+
+                    </FormControl>
+                  </Grid>
+
+
+                </Grid>
+
+
+                <Grid item sx={{ mt: 1, }} xs={12} md={3} key={1111} direction="row">
+
+
+                  <Grid >
+                    <FormControl item >
+
+                      <FormGroup aria-label="position"  >
+                        <FormLabel sx={{ textAlign: "center" }}>المراجعة الكبرى</FormLabel>
+
+                        <Grid container sx={{ mt: 1 }} gap={2} direction="row-reverse">
+
+                          <Grid item >
+                            <FormControl item >
+                              <FormLabel sx={{ textAlign: "center", color: "black" }}> السورة</FormLabel>
+                              <Select
+                                labelId="labelMemorizeddd"
+                                sx={{ width: 123, height: 40, background: "white" }}
+                                id="select"
+                                value={dataRequest.numberOfSorahBiggestMemorize}
+                                onChange={(e) =>
+                                  setDataRequest({
+                                    ...dataRequest,
+                                    numberOfSorahBiggestMemorize: e.target.value,
+                                  })
+                                }
+                              >
+                                {sorahNames.map((e, idx) => (
+                                  <MenuItem key={idx + 1} value={1 + idx}>
+                                    {e}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </Grid>
+                          <Grid item   >
+                            <FormControl item >
+                              <FormLabel sx={{ textAlign: "center", color: "black" }}> آية</FormLabel>
+
+                              <Select
+                                xs={2}
+                                labelId="labelAyah"
+                                sx={{ width: 75, height: 40, background: "white" }}
+                                id="select"
+                                value={dataRequest.numberOfAyahBiggestMemorize}
+                                onChange={(e) => {
+                                  console.log(
+                                    "numberOfAyahBiggestMemorize :: ",
+                                    e.target.value
+                                  );
+                                  setDataRequest({
+                                    ...dataRequest,
+                                    numberOfAyahBiggestMemorize: e.target.value,
+                                  });
+                                }}
+
+
+                              >
+                                {listOfAyah}
+                              </Select>
+                            </FormControl>
+                          </Grid>
+                        </Grid>
+                      </FormGroup>
+                    </FormControl>
+                  </Grid>
+
+                  < Grid xs={12} >
+                    <FormControl sx={{ mt: 1 }} dir="rtl" variant="outlined">
+                      <FormLabel sx={{ color: "black" }} id="labelMemorized">
+                        عدد الاوجه للمراجعة الكبرى
+                      </FormLabel>
+                      <OutlinedInput
+                        id="outlined-adornment-weightt"
+                        type="number"
+                        value={dataRequest.numberOfPageBiggestMemorized}
+                        sx={{ width: 215, height: 40, background: "white" }}
+                        onChange={(e) =>
+                          setDataRequest({
+                            ...dataRequest,
+                            numberOfPageBiggestMemorized: e.target.value,
+                          })
+                        }
+                        endAdornment={
+                          <InputAdornment sx={{ ml: 1.5 }}>{
+                            dataRequest.numberOfPageBiggestMemorized == 1 ? "وجه" : dataRequest.numberOfPageBiggestMemorized == 2 ? "وجهان" : "أوجه"
+                          }</InputAdornment>
+                        }
+                      // aria-describedby="outlined-weight-helper-text"
+                      // inputProps={{
+                      //   "aria-label": "weight",
+                      // }}
+                      />
+                      {/* <FormHelperText id="outlined-weight-helper-textt">
                   الاوجه
                 </FormHelperText> */}
-              </FormControl>
-            </div>
-            <div className="settingsPart">
-              <div style={{ display: "flex" }}>
-                <FormControl className={[classes.formControl,{ flex: "1" }]}
-                style={{ margin: "10px" }}>
-                  <InputLabel style={{ margin: "-10px" ,color:"black"}} id="labelAyahaa">الاية</InputLabel>
+                    </FormControl>
+                  </Grid>
 
-                  <Select
-                    labelId="labelAyahaa"
-                    sx={{ width: 100, height: 35 }}
-                    id="selecttt"
-                    value={dataRequest.numberOfAyahBiggestMemorize}
-                    onChange={(e) => {
-                      console.log(
-                        "numberOfAyahBiggestMemorize :: ",
-                        e.target.value
-                      );
-                      setDataRequest({
-                        ...dataRequest,
-                        numberOfAyahBiggestMemorize: e.target.value,
-                      });
-                    }}
-                  >
-                    {listOfAyahBiggestMemorized}
-                  </Select>
-                </FormControl>
-
-                <FormControl
-                  className={[classes.formControl, { flex: "2" }]}
-                  style={{ margin: "10px" }}
-                >
-                  <InputLabel style={{ margin: "-10px" }} id="labelMemorizeddd">
-                    بداية المراجعة سورة
-                  </InputLabel>
-                  <Select
-                    labelId="labelMemorizeddd"
-                    sx={{ width: 100, height: 35 }}
-                    id="select"
-                    value={dataRequest.numberOfSorahBiggestMemorize}
-                    onChange={(e) =>
-                      setDataRequest({
-                        ...dataRequest,
-                        numberOfSorahBiggestMemorize: e.target.value,
-                      })
-                    }
-                  >
-                    {sorahNames.map((e, idx) => (
-                      <MenuItem key={idx + 1} value={1 + idx}>
-                        {e}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-              <InputLabel id="labelMemorized">
-                {" "}
-                عدد ايام الخطة في الاسبوع
-              </InputLabel>
-              <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                <OutlinedInput
-                  id="outlined-adornment-weightt"
-                  type="number"
-                  value={dataRequest.numberOfDayPeerWeek}
-                  onChange={(e) =>
-                    setDataRequest({
-                      ...dataRequest,
-                      numberOfDayPeerWeek: e.target.value,
-                    })
-                  }
-                  endAdornment={
-                    <InputAdornment position="start">الايام</InputAdornment>
-                  }
-                  aria-describedby="outlined-weight-helper-text"
-                  inputProps={{
-                    "aria-label": "weight",
-                  }}
-                />
-                {/* <FormHelperText id="outlined-weight-helper-textt">
-                  الايام
-                </FormHelperText> */}
-              </FormControl>
-
-              <InputLabel id="labelMemorized"> عدد الايام للخطة </InputLabel>
-              <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-                <OutlinedInput
-                  id="outlined-adornment-weightt"
-                  type="number"
-                  value={dataRequest.numberOfDayForPlan}
-                  onChange={(e) =>
-                    setDataRequest({
-                      ...dataRequest,
-                      numberOfDayForPlan: e.target.value,
-                    })
-                  }
-                  endAdornment={
-                    <InputAdornment position="start">الايام</InputAdornment>
-                  }
-                  aria-describedby="outlined-weight-helper-text"
-                  inputProps={{
-                    "aria-label": "weight",
-                  }}
-                />
-                {/* <FormHelperText id="outlined-weight-helper-textt">
-                  الايام
-                </FormHelperText> */}
-              </FormControl>
+                </Grid>
+              </Grid>
               <br />
-              {/* AdapterHijri */}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  sx={{ m: 1, width: "15ch", textAlign: "right" }}
-                  
-                  disableMaskedInput={true}
-                  label="التاريخ"
-                  openTo="day"
-                  inputFormat={"DD/MM/YYYY"}
-                  views={["month", "year", "day"]}
-                  value={valueDate}
-                  onChange={(e) => {
-                    setDataRequest({
-                      ...dataRequest,
-                      localDate: e.$d.toJSON().substring(0, 10),
-                    });
-                    setValueDate(e);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </div>
-          </div>
-          <br />
-          <input type="submit" value="Press" />
 
-          
-        </form>
+              <Button type="submit" sx={{ mb: 1, width: 250 }} variant="contained">إنشاء الخطة</Button>
+            </Box>
+          </Grid>
 
-        <button onClick={(e) => {
+        </Box>
 
-const fetchUsersss = async () => {
-  let d = await axios.post("http://localhost:8080/test_data", dataProcessed);
-  console.log("fun Call ... ");
-};
 
-fetchUsersss();
-console.log("Yaoo")
-console.log(dataProcessed)
-e.preventDefault();
+        <Grid container direction="row" justifyContent="center" alignItems="center">
 
-          }} >"Muhannad"</button>
-       
-      </div>
+          <Button item variant="contained" sx={{ mr: 2.9, width: 112 }} onClick={(e) => {
+
+            const fetchUsersss = async () => {
+              let d = await axios.post(`http://localhost:8080/printData/${dataRequest.printType}`, dataProcessed)
+
+              console.log("fun i... ", d.data);
+              const linkSource = `data:application/${dataRequest.printType};base64,${d.data}`;
+              const downloadLink = document.createElement("a");
+              const fileName = `plan.${dataRequest.printType}`;
+              downloadLink.href = linkSource;
+              downloadLink.download = fileName;
+              downloadLink.click();
+
+            };
+
+            fetchUsersss();
+            console.log(dataProcessed)
+            e.preventDefault();
+
+          }} >تحميل الجدول</Button>
+
+
+          <FormControl dir="rtl" sx={{}} >
+
+            <InputLabel shrink sx={{ color: "black" }} id="labelMemorizedssss" >
+              صيغة الجدول
+            </InputLabel>
+
+            <Select
+
+              labelId="labelMemorizedssss"
+              sx={{ width: 115, height: 37, background: "white" }}
+              id="seleccct"
+              label="صيغة الجدول"
+
+              value={dataRequest.printType}
+              onChange={(e) => {
+                console.log(e);
+                setDataRequest({
+                  ...dataRequest,
+                  printType: e.target.value,
+                });
+              }}
+            >
+              <MenuItem key={1} value={"pdf"}>
+                PDF
+              </MenuItem>
+              <MenuItem key={2} value={"xlsx"}>
+                Excel
+              </MenuItem>
+              <MenuItem key={3} value={"docx"}>
+                Word
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+
+      </Container >
 
       <br />
-      {dataProcessed && (
-        <MuhannadTable
-          data={dataProcessed}
-          memorized={dataResponse["memorized"]}
-          smallMemorized={dataResponse["smallMemorized"]}
-          biggestMemorized={dataResponse["biggestMemorized"]}
-        />
-      )}
-    </div>
+      {
+        dataProcessed && (
+          <MuhannadTable
+
+            data={dataProcessed}
+            memorized={dataResponse["memorized"]}
+            smallMemorized={dataResponse["smallMemorized"]}
+            biggestMemorized={dataResponse["biggestMemorized"]}
+          />
+        )
+      }
+    </Container >
   );
 };
 

@@ -20,7 +20,7 @@ div.settings {
   padding: 0 0 5px 0;
   text-align: center;
   background: #ebebeb;
-  border: 2px solid #e7e7e7;
+  border: 2px solid #a34a4a;
   border-radius: 3px;
 }
 
@@ -28,12 +28,11 @@ div.settings input {
   background: rgb(255, 255, 255);
 }
 
-div.setting form div div div {
-  background: white;
-}
+
 
 div.titleSettings {
   width: 100%;
+  margin-bottom: 20px;
   padding: 10 0;
   background: #3770a2;
   color: white;
@@ -43,6 +42,7 @@ div.parts {
   display: flex;
   margin-top: 10px;
 }
+
 div.settingsPart {
   margin: 0 20px;
   flex: 10;
@@ -61,5 +61,3 @@ div.settingsPart {
   padding: 20px;
   border: 2px solid red;
 }
-
-
