@@ -1,8 +1,13 @@
 import React from "react";
-import ReactDoM from "react-dom/client";
 
-const Footer = () => {
-  return <p>This is Footer </p>;
-};
 
-export default Footer;
+export default function Footer() {
+
+    return <div>
+        <br />
+        <br />
+    </div>
+
+}
+
+

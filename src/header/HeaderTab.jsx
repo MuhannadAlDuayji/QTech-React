@@ -46,7 +46,7 @@ import dayjs from "dayjs";
 
 import Stack from "@mui/material/Stack";
 
-import MuhannadTable from "../body/MuhannadTable";
+import DataTable from "../body/DataTable";
 import { withTheme } from "styled-components";
 import { withEmotionCache } from "@emotion/react";
 import { FormLabel } from "@mui/material";
@@ -93,7 +93,7 @@ const data = {
   lastName: "Alduayji-vs",
   printType: "pdf"
 };
-const getTechPlan = "http://localhost:8080/getTechPlan";
+const getTechPlan = "http://localhost:8090/getTechPlan";
 
 const HeaderTab = (classes) => {
   const [textInput, setTextInput] = React.useState("");
@@ -129,6 +129,8 @@ const HeaderTab = (classes) => {
 
     setListOfAyah(listOfAyahProcess);
   }, [dataRequest.numberOfSorah]);
+
+
 
   useEffect(() => {
     listOfAyahProcess = [];
@@ -292,16 +294,19 @@ const HeaderTab = (classes) => {
                         type="number"
                         sx={{ width: 215, height: 40, background: "white" }}
                         value={dataRequest.numberOfDayPeerWeek}
+                        inputProps={{ min: 1, max: 7 }}
                         onChange={(e) =>
                           setDataRequest({
                             ...dataRequest,
                             numberOfDayPeerWeek: e.target.value,
+                            numberOfDaysSmallMemorized: dataRequest.numberOfDaysSmallMemorized >= e.target.value ? e.target.value - 1 : dataRequest.numberOfDaysSmallMemorized
                           })
                         }
                         endAdornment={
-                          <InputAdornment sx={{ ml: 1.5 }}>{
-                            dataRequest.numberOfDayPeerWeek == 1 ? "يوم" : dataRequest.numberOfDayPeerWeek == 2 ? "يومان" : "أيام"
-                          }</InputAdornment>
+                          <InputAdornment
+                            sx={{ ml: 1.5 }}>{
+                              dataRequest.numberOfDayPeerWeek == 1 ? "يوم" : dataRequest.numberOfDayPeerWeek == 2 ? "يومان" : "أيام"
+                            }</InputAdornment>
                         }
 
                       />
@@ -317,6 +322,8 @@ const HeaderTab = (classes) => {
                         type="number"
                         value={dataRequest.numberOfDayForPlan}
                         sx={{ width: 215, height: 40, background: "white" }}
+                        inputProps={{ min: 0 }}
+
                         onChange={(e) =>
                           setDataRequest({
                             ...dataRequest,
@@ -360,16 +367,13 @@ const HeaderTab = (classes) => {
                       </Select>
                     </FormControl>
                   </Grid>
-
                 </Grid>
-
-
 
                 <Grid item sx={{ mt: 1, borderLeft: "1px solid white" }} xs={12} md={3} key={1113} container
                   direction="row"
                 >
 
-                  <Grid xs={12} >
+                  <Grid xs={12} sx={{ mb: -0.5 }}>
                     <FormControl item >
                       <FormGroup aria-label="position">
                         <FormLabel sx={{ textAlign: "center" }}>الـحــفــظ</FormLabel>
@@ -418,8 +422,6 @@ const HeaderTab = (classes) => {
                                     numberOfAyah: e.target.value,
                                   });
                                 }}
-
-
                               >
                                 {listOfAyah}
                               </Select>
@@ -429,15 +431,16 @@ const HeaderTab = (classes) => {
                       </FormGroup>
                     </FormControl>
                   </Grid>
-                  <Grid xs={12} sx={{ mt: -0.3 }}>
+                  <Grid xs={12} sx={{ mb: -1 }}>
 
                     <FormControl dir="rtl" item >
-                      <FormLabel sx={{ color: "black" }} id="labelMemorized">عدد أوجه الحفظ</FormLabel>
+                      <FormLabel sx={{ color: "black", }} id="labelMemorized">عدد أوجه الحفظ</FormLabel>
 
                       <OutlinedInput
                         id="outlined-adornment-weightt"
                         type="number"
                         value={dataRequest.numberOfPageDrs}
+                        inputProps={{ min: 0 }}
                         sx={{ width: 215, height: 40, background: "white" }}
                         onChange={(e) => {
                           console.log("value : ", e.target.value);
@@ -457,7 +460,7 @@ const HeaderTab = (classes) => {
                   </Grid>
 
                   <Grid xs={12}
-                    sx={{ mt: 0 }}>
+                    sx={{}}>
 
                     <FormControl item dir="rtl" >
                       <FormLabel sx={{ color: "black" }} id="labelMemorized">عدد سطور الحفظ</FormLabel>
@@ -466,6 +469,10 @@ const HeaderTab = (classes) => {
                         id="outlined-adornment-weight"
                         type="number"
                         value={dataRequest.numberOfLineDrs}
+                        inputProps={{
+                          "aria-label": "weight",
+                          min: 0
+                        }}
                         sx={{ width: 215, height: 40, background: "white" }}
                         onChange={(e) => {
                           console.log("value : ", e.target.value);
@@ -481,9 +488,7 @@ const HeaderTab = (classes) => {
                           </InputAdornment>
                         }
                         aria-describedby="outlined-weight-helper-text"
-                        inputProps={{
-                          "aria-label": "weight",
-                        }}
+
                       />
                       {/* <FormHelperText id="outlined-weight-helper-text">
                   السطور
@@ -498,7 +503,6 @@ const HeaderTab = (classes) => {
                   </Grid>
 
                   {/* AdapterHijri */}
-
                 </Grid>
 
                 <Grid item sx={{ mt: 1, borderLeft: "1px solid white" }} xs={12} md={3} key={1112} direction="row">
@@ -510,8 +514,6 @@ const HeaderTab = (classes) => {
                       </FormGroup>
                     </FormControl>
                   </Grid>
-
-
 
                   <Grid sx={{ mt: 1 }} >
                     <FormControl dir="rtl" variant="outlined">
@@ -548,6 +550,7 @@ const HeaderTab = (classes) => {
                         type="number"
                         value={dataRequest.numberOfDaysSmallMemorized}
                         sx={{ width: 215, height: 40, background: "white" }}
+                        inputProps={{ min: 0, max: dataRequest.numberOfDayPeerWeek - 1 }}
                         onChange={(e) =>
                           setDataRequest({
                             ...dataRequest,
@@ -568,13 +571,10 @@ const HeaderTab = (classes) => {
                       {/* <FormHelperText id="outlined-weight-helper-textt">
                   الايام
                 </FormHelperText> */}
-
                     </FormControl>
                   </Grid>
 
-
                 </Grid>
-
 
                 <Grid item sx={{ mt: 1, }} xs={12} md={3} key={1111} direction="row">
 
@@ -651,6 +651,7 @@ const HeaderTab = (classes) => {
                         id="outlined-adornment-weightt"
                         type="number"
                         value={dataRequest.numberOfPageBiggestMemorized}
+                        inputProps={{ min: 0 }}
                         sx={{ width: 215, height: 40, background: "white" }}
                         onChange={(e) =>
                           setDataRequest({
@@ -690,7 +691,7 @@ const HeaderTab = (classes) => {
           <Button item variant="contained" sx={{ mr: 2.9, width: 112 }} onClick={(e) => {
 
             const fetchUsersss = async () => {
-              let d = await axios.post(`http://localhost:8080/printData/${dataRequest.printType}`, dataProcessed)
+              let d = await axios.post(`http://localhost:8090/printData/${dataRequest.printType}`, dataProcessed)
 
               console.log("fun i... ", d.data);
               const linkSource = `data:application/${dataRequest.printType};base64,${d.data}`;
@@ -707,7 +708,6 @@ const HeaderTab = (classes) => {
             e.preventDefault();
 
           }} >تحميل الجدول</Button>
-
 
           <FormControl dir="rtl" sx={{}} >
 
@@ -745,12 +745,19 @@ const HeaderTab = (classes) => {
         </Grid>
 
       </Container >
+      <br />
+
+      <Grid sx={{ m: 1 }}>
+        <Grid><strong>شكراً لتواصلكم معنا تم حل مشكلة تحميل الخطط، في حال استمرت المشكلة في الظهور الرجاء التواصل معنا</strong></Grid>
+        <Grid><strong> : ما زلنا نستقبل رسائلكم واقتراحاتكم</strong></Grid>
+        <Grid><strong>Khalid492@gmail.com</strong>
+        </Grid>
+      </Grid>
 
       <br />
       {
         dataProcessed && (
-          <MuhannadTable
-
+          <DataTable
             data={dataProcessed}
             memorized={dataResponse["memorized"]}
             smallMemorized={dataResponse["smallMemorized"]}
