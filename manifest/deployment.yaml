@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: almaher-frontend-deployment
+  labels:
+    app: almaher-frontend
+spec:
+  selector:
+    matchLabels:
+      app: almaher-frontend
+  template:
+    metadata:
+      labels:
+        app: almaher-frontend
+    spec:
+      containers:
+        - name: almaher-frontend
+          image: registry.gyoom.sa/almaher-frontend:latest
+          ports:
+            - containerPort: 3000
+          resources:
+              limits:
+                cpu: 200m
+              requests:
+                cpu: 100m
