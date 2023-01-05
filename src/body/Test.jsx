@@ -375,7 +375,7 @@ const testData = [
   },
 ];
 
-const getTechPlan = "http://localhost:8080/getTechPlan";
+const getTechPlan = "https://api.almaher.org/getTechPlan";
 
 const Test = (props) => {
   const [responseData, setResponseData] = useState([]);

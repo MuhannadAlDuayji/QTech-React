@@ -93,7 +93,7 @@ const data = {
   lastName: "Alduayji-vs",
   printType: "pdf"
 };
-const getTechPlan = "http://localhost:8090/getTechPlan";
+const getTechPlan = "https://api.almaher.org/getTechPlan";
 
 const HeaderTab = (classes) => {
   const [textInput, setTextInput] = React.useState("");
@@ -691,7 +691,7 @@ const HeaderTab = (classes) => {
           <Button item variant="contained" sx={{ mr: 2.9, width: 112 }} onClick={(e) => {
 
             const fetchUsersss = async () => {
-              let d = await axios.post(`http://localhost:8090/printData/${dataRequest.printType}`, dataProcessed)
+              let d = await axios.post(`https://api.almaher.org/printData/${dataRequest.printType}`, dataProcessed)
 
               console.log("fun i... ", d.data);
               const linkSource = `data:application/${dataRequest.printType};base64,${d.data}`;
