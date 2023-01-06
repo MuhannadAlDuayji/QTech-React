@@ -29,6 +29,7 @@ import FormGroup from "@mui/material/FormGroup";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { config } from '../Constants'
 // import FormHelperText from '@mui/material/FormHelperText';
 
 // import Input from '@mui/material/Input';
@@ -93,7 +94,9 @@ const data = {
   lastName: "Alduayji-vs",
   printType: "pdf"
 };
-const getTechPlan = "https://api.almaher.org/getTechPlan";
+
+
+const getTechPlan = `${config.url.API_URL}/getTechPlan`;
 
 const HeaderTab = (classes) => {
   const [textInput, setTextInput] = React.useState("");
@@ -1346,7 +1349,7 @@ const HeaderTab = (classes) => {
                   <Grid xs={12}>
                     <FormControl sx={{ mt: 1 }} dir="rtl">
 
-                      <FormLabel sx={{ textAlign: "center", color: "black" }} id="labelMemorized"> طريقة الحفظ </FormLabel>
+                      <FormLabel sx={{ textAlign: "center", color: "black" }} id="labelMemorized"> طريقة التسميع </FormLabel>
                       <Select
 
                         labelId="labelMemorized"
@@ -1682,7 +1685,7 @@ const HeaderTab = (classes) => {
               </Grid>
               <br />
 
-              <Button type="submit" sx={{ mb: 1, width: 250 }} variant="contained">إنشاء الخطة</Button>
+              <Button type="submit" sx={{ background: "#3770A2", mb: 1, width: 250 }} variant="contained">إنشاء الخطة</Button>
             </Box>
           </Grid>
 
@@ -1691,10 +1694,10 @@ const HeaderTab = (classes) => {
 
         <Grid container direction="row" justifyContent="center" alignItems="center">
 
-          <Button item variant="contained" sx={{ mr: 2.9, width: 112 }} onClick={(e) => {
+          <Button item variant="contained" sx={{ background: "#3770A2", mr: 2.9, width: 112 }} onClick={(e) => {
 
             const fetchUsersss = async () => {
-              let d = await axios.post(`https://api.almaher.org/printData/${dataRequest.printType}`, dataProcessed)
+              let d = await axios.post(`${config.url.API_URL}/printData/${dataRequest.printType}`, dataProcessed)
 
               console.log("fun i... ", d.data);
               const linkSource = `data:application/${dataRequest.printType};base64,${d.data}`;
@@ -1751,7 +1754,6 @@ const HeaderTab = (classes) => {
       <br />
 
       <Grid sx={{ m: 1 }}>
-        <Grid><strong>شكراً لتواصلكم معنا تم حل مشكلة تحميل الخطط، في حال استمرت المشكلة في الظهور الرجاء التواصل معنا</strong></Grid>
         <Grid><strong> : ما زلنا نستقبل رسائلكم واقتراحاتكم</strong></Grid>
         <Grid><strong>Khalid492@gmail.com</strong>
         </Grid>
@@ -1761,6 +1763,7 @@ const HeaderTab = (classes) => {
       {
         dataProcessed && (
           <DataTable
+            numberOfDayPeerWeek={dataRequest.numberOfDayPeerWeek}
             data={dataProcessed}
             memorized={dataResponse["memorized"]}
             smallMemorized={dataResponse["smallMemorized"]}
