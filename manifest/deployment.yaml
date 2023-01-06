@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: almaher-frontend
-          image: registry.gyoom.sa/frontend:1bdc2f6af9163f9bc7d7b98a186839280ae67da1
+          image: registry.gyoom.sa/frontend:aeacabd246567721e9f2716c87f7d9a22d6a1edc
           ports:
             - containerPort: 3000
           resources:
