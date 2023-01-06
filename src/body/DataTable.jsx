@@ -144,22 +144,28 @@ const DataTable = (props) => {
   }, [props.memorized, props.smallMemorized, props.biggestMemorized]);
 
   return (
-    <Paper sx={{ ml: 1, alignContent: "center" }}>
+    <Paper sx={{ ml: 0, alignContent: "center" }}>
       <TableContainer >
         <Table  {...getTableProps()}>
           <TableHead sx={{ background: "#3770A2", color: "white", borderColor: "#3770A2", borderStyle: "solid" }}>
             {headerGroups.map((headerGroup) => {
               return (
-                <TableRow {...headerGroup.getHeaderGroupProps()}>
+                <TableRow  {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) =>
                     // here to make col-span in walk around way 
                     column.depth !== 2 ? (
-                      <TableCell sx={{
-                        textAlign: "center", color: "white", borderRight: "1px solid white",
-                        fontFamily: "Roboto Helvetica Arial sans-serif",
-                        fontWeight: 400,
-                        fontSize: "1rem"
-                      }} {...column.getHeaderProps()}>
+                      <TableCell
+                        // fix issue the issue :)
+                        rowSpan={(column.depth === 1) ? "2" : ""}
+                        sx={{
+                          paddingY: 1,
+                          fontFamily: "Loew Next Arabic Medium",
+                          textAlign: "center",
+                          color: "white",
+                          borderRight: "1px solid white",
+                          fontWeight: "bold",
+                          fontSize: "1rem"
+                        }} {...column.getHeaderProps()}>
                         {column.render("Header")}
                       </TableCell>
                     ) : (
@@ -178,10 +184,10 @@ const DataTable = (props) => {
                   {row.cells.map((cell) => {
                     return (
                       <TableCell sx={{
+                        paddingY: 1,
                         textAlign: "center", color: "#3770A2", borderColor: "#3770A2", borderStyle: "solid",
-                        fontFamily: "Roboto Helvetica Arial sans-serif",
-                        fontWeight: 400,
-                        fontSize: "1rem"
+                        fontWeight: "bold",
+                        fontSize: "0.98rem"
                       }} {...cell.getCellProps()}>{cell.render("Cell")}</TableCell>
                     );
                   })}
