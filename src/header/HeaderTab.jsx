@@ -1161,20 +1161,20 @@ const HeaderTab = (classes) => {
   const handleClick = (e) => {
     const fetchUsers = async () => {
       let d = await axios.post(getTechPlan, dataRequest);
-      console.log(" Request Data <<<:::>>> \n", dataRequest);
+      // console.log(" Request Data <<<:::>>> \n", dataRequest);
       setDataResponse(d.data);
-      console.log("<<< - Response Data - >>> ::: \n", dataResponse);
+      // console.log("<<< - Response Data - >>> ::: \n", dataResponse);
     };
 
-    console.log(dataRequest, "...")
+    // console.log(dataRequest, "...")
     fetchUsers();
 
     e.preventDefault();
   };
 
   const handleChange = (event) => {
-    console.log("setTextInput : ", setTextInput(event.target.value));
-    console.log("Event target : ", event.target.value);
+    // console.log("setTextInput : ", setTextInput(event.target.value));
+    // console.log("Event target : ", event.target.value);
   };
 
   useEffect(() => {
@@ -1229,11 +1229,15 @@ const HeaderTab = (classes) => {
           new Date(dayPlan["gregorianDate"]).getDay()
         );
 
+        // for khalid he dose not like year appering in table !!
+        dayPlan["gregorianDate"] = dayPlan["gregorianDate"].substring(5, 10);
+        dayPlan["hijrahDate"] = dayPlan["hijrahDate"].substring(5, 10);
         plans.push(dayPlan);
+
       }
 
-      console.log("dataResponses :: ", dataResponse);
       setDataProcessed(plans);
+
     }
   }, [dataResponse]);
 
@@ -1357,7 +1361,7 @@ const HeaderTab = (classes) => {
                         id="select"
                         value={dataRequest.wayForMemorized}
                         onChange={(e) => {
-                          console.log(e);
+                          // console.log(e);
                           setDataRequest({
                             ...dataRequest,
                             wayForMemorized: e.target.value,
@@ -1422,7 +1426,7 @@ const HeaderTab = (classes) => {
                                 id="select"
                                 value={dataRequest.numberOfAyah}
                                 onChange={(e) => {
-                                  console.log("Ayah number :: ", e.target.value);
+                                  // console.log("Ayah number :: ", e.target.value);
                                   setDataRequest({
                                     ...dataRequest,
                                     numberOfAyah: e.target.value,
@@ -1449,7 +1453,7 @@ const HeaderTab = (classes) => {
                         inputProps={{ min: 0 }}
                         sx={{ width: 215, height: 40, background: "white" }}
                         onChange={(e) => {
-                          console.log("value : ", e.target.value);
+                          // console.log("value : ", e.target.value);
                           setDataRequest({
                             ...dataRequest,
                             numberOfPageDrs: e.target.value,
@@ -1481,7 +1485,7 @@ const HeaderTab = (classes) => {
                         }}
                         sx={{ width: 215, height: 40, background: "white" }}
                         onChange={(e) => {
-                          console.log("value : ", e.target.value);
+                          // console.log("value : ", e.target.value);
                           setDataRequest({
                             ...dataRequest,
                             numberOfLineDrs: e.target.value,
@@ -1627,10 +1631,10 @@ const HeaderTab = (classes) => {
                                 id="select"
                                 value={dataRequest.numberOfAyahBiggestMemorize}
                                 onChange={(e) => {
-                                  console.log(
-                                    "numberOfAyahBiggestMemorize :: ",
-                                    e.target.value
-                                  );
+                                  // console.log(
+                                  //   "numberOfAyahBiggestMemorize :: ",
+                                  //   e.target.value
+                                  // );
                                   setDataRequest({
                                     ...dataRequest,
                                     numberOfAyahBiggestMemorize: e.target.value,
@@ -1699,7 +1703,7 @@ const HeaderTab = (classes) => {
             const fetchUsersss = async () => {
               let d = await axios.post(`${config.url.API_URL}/printData/${dataRequest.printType}`, dataProcessed)
 
-              console.log("fun i... ", d.data);
+              // console.log("fun i... ", d.data);
               const linkSource = `data:application/${dataRequest.printType};base64,${d.data}`;
               const downloadLink = document.createElement("a");
               const fileName = `plan.${dataRequest.printType}`;
@@ -1710,7 +1714,7 @@ const HeaderTab = (classes) => {
             };
 
             fetchUsersss();
-            console.log(dataProcessed)
+            // console.log(dataProcessed)
             e.preventDefault();
 
           }} >تحميل الجدول</Button>
@@ -1730,7 +1734,7 @@ const HeaderTab = (classes) => {
 
               value={dataRequest.printType}
               onChange={(e) => {
-                console.log(e);
+                // console.log(e);
                 setDataRequest({
                   ...dataRequest,
                   printType: e.target.value,
