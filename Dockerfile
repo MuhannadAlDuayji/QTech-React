@@ -33,4 +33,4 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
 # docker build . -t almaher-frontend
-# docker run -p 3000:80 -d almaher-frontend
+# docker run -p 3000:80 -d almaher-frontend 
