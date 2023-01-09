@@ -1,15 +1,32 @@
-FROM node:18.12.1-slim
 
+
+# Fetching the latest node image on apline linux
+FROM node:alpine AS builder
+
+# Declaring env
+ENV NODE_ENV production
+
+# Setting up the work directory
 WORKDIR /app
 
-COPY . .
-
-RUN npm install -g svgo
-
-ENV API_URL=localhost:3000
-
+# Installing dependencies
+COPY ./package.json ./
 RUN npm install
 
-EXPOSE 3000
+# Copying all the files in our project
+COPY . .
 
-ENTRYPOINT ["npm", "run","build"]
+# Building our application
+RUN npm run build
+
+# Fetching the latest nginx image
+FROM nginx
+
+# Copying built assets from builder
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Copying our nginx.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# docker build . -t almaher-frontend
+# docker run -p 3000:80 -d almaher-frontend
